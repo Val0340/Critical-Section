@@ -1,0 +1,71 @@
+/* Lab 2: Critical Section example
+Programmer: Linval Bailey
+Date: September 23,2019
+Filename: CriticalSection.java
+Purpose: This program similize the job of critical section for process. Assuming a process
+can only stay in the critical section for five units of time (bounding time) and have to 
+leave and stay at the situation of Remainder, waiting for next turn to be in the critical 
+section. At the same, time the next process can enter the critical section.
+This program is based on the idea from Decker's algorithm.
+*/
+
+//=================================================================================
+
+import java.util.Scanner;
+public class CriticalSection
+{
+	public static void main(String[] args)
+	{
+	//---declare variables---------------------------------------------------
+	int i =0, j =1;
+	int turn=1, count=0, bounding=0;
+	boolean[] flag = new boolean[2];
+	
+		Scanner input = new Scanner(System.in);
+		System.out.println( "How much is the bounding time to be set? enter number 1 to 10: ");
+		bounding =input.nextInt();
+		
+	do{
+		flag[i] = true;
+			flag[j] = true;
+			
+		if (turn ==0) turn = 1;
+		else if (turn == 1) turn = j;
+		while ((flag[j]) && (turn == j)) {
+			if (turn == j) {
+				flag[i] = false;
+				while ((turn == j)&& (count < bounding)){
+					System.out.println("Process[" +j + "] is in critical section.");
+					System.out.println("Process[" + i + "] is idle, waiting for entering the critical section");
+					System.out.println();
+					count++;
+				}
+				System.out.println("Process[" + j + "] is out of critical section, stay in remainder section.");
+				System.out.println();
+				
+				flag[i] = true;
+				flag[j] = false;
+				}
+			   }//end while
+			   //critical section
+			   System.out.println();
+			   System.out.println("Process[" + i + "] is going to be in critical section.");
+			   System.out.println();
+			   if (turn == j) turn = i;
+			   count = 0;
+			while ((flag[i]) && (turn == i)) {
+				flag[j] = false;
+				while ((turn == i)&& (count < bounding)){
+					System.out.println("Process[" + i + "] is in critical section.");
+					System.out.println("Process[" + j + "] is idle.");
+					System.out.println();
+					count++;
+				}
+				System.out.println("Process[" + i + "] is out of critical section, stay in remainder section.");
+				flag[j] = true;
+				flag[i] = false;
+			}
+			//remainder section
+	}while (count < bounding); //end of do-loop
+}//end of main
+}//end of class
